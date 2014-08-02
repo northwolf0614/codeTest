@@ -20,8 +20,9 @@
 #define reachabilityTestURL                 @"www.foursquare.com"
 #define deltaOfLatitude                     0.005
 #define deltaOfLongtitude                   0.005
-#define tableCellHeight                     70
+#define tableCellHeight                     60
 #define maxLinesInACell                      3
+#define fontSize                            15
 
 @interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
@@ -320,6 +321,8 @@
     cell.detailTextLabel.numberOfLines = maxLinesInACell;
     FSVenue *venue = self.nearbyVenues[indexPath.row];
     cell.textLabel.text = [venue name];
+    cell.textLabel.font= [UIFont fontWithName:@"Arial" size:fontSize];
+    cell.textLabel.textColor= [UIColor blueColor];
     //deal with the different cases for the address, contact
     if ([venue.location.address isKindOfClass:[NSString class]])
         
