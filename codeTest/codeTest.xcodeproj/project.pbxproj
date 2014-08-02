@@ -105,13 +105,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		09674F39198B446D005BEEEC /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = iPad;
-			sourceTree = "<group>";
-		};
 		09BAC968198A6C8A00DA2C58 = {
 			isa = PBXGroup;
 			children = (
@@ -150,7 +143,6 @@
 		09BAC97A198A6C8A00DA2C58 /* codeTest */ = {
 			isa = PBXGroup;
 			children = (
-				09674F39198B446D005BEEEC /* iPad */,
 				09BAC983198A6C8A00DA2C58 /* xyzAppDelegate.h */,
 				09BAC984198A6C8A00DA2C58 /* xyzAppDelegate.m */,
 				098004D9198C65D80036DF3D /* Reachability.h */,

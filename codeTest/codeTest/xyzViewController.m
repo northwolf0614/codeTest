@@ -375,7 +375,7 @@
 {
     FSVenue *venue = self.nearbyVenues[indexPath.row];
     for (TestAnnotation* an in self.mapView.annotations) {
-        if ([an.title isEqual:venue.name]) {
+        if (an.coordinate.latitude==venue.coordinate.latitude&&an.coordinate.longitude==venue.coordinate.longitude) {
             
             [self.mapView selectAnnotation:an animated:YES];
             MKCoordinateRegion region;
