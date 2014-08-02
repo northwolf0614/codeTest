@@ -10,9 +10,5 @@
 #import "CodeTestViewController.h"
 
 @interface CodeTestAppDelegate : UIResponder <UIApplicationDelegate>
-
 @property (nonatomic, retain) UIWindow *window;
-@property (nonatomic, retain) UINavigationController *navigationController;
-@property (nonatomic, retain) CodeTestViewController *rootviewController;
-
 @end

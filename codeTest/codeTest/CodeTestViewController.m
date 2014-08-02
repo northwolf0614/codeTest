@@ -5,7 +5,6 @@
 //  Created by linchuang on 31/07/2014.
 //  Copyright (c) 2014 codeTest. All rights reserved.
 //
-#import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
 #import "CodeTestViewController.h"
 #import "Foursquare2.h"
@@ -17,24 +16,23 @@
 #import "Reachability.h"
 
 #define indicatingWindowShowingTime         3
-#define defaultDistance                     3000
+#define defaultDistance                     3000//in meter
 #define reachabilityTestURL                 @"www.foursquare.com"
 #define deltaOfLatitude                     0.005
 #define deltaOfLongtitude                   0.005
+#define tableCellHeight                     70
+#define maxLinesInACell                      3
 
 @interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
 @property (retain,  nonatomic) CLLocationManager *locationManager;
 @property (retain,  nonatomic) MKMapView *mapView;
 @property (retain,  nonatomic) CLLocation *currentLocation;
-@property (retain,  nonatomic) UIWebView* phoneCallWebView;
+//@property (retain,  nonatomic) UIWebView* phoneCallWebView;
 @property (retain,  nonatomic) FSVenue *selected;
 @property (retain,  nonatomic) NSArray *nearbyVenues;
 @property (retain,  nonatomic) Reachability* reachedHost;
 @property (retain,  nonatomic) UIAlertView* alertView;
-@property (retain,  nonatomic) NSNumber* distance;
-
-
 @end
 
 @implementation CodeTestViewController
@@ -46,12 +44,13 @@
     self.alertView.delegate=nil;
     [_locationManager release];
     [_mapView release];
-    [_phoneCallWebView release];
+    //[_phoneCallWebView release];
     [_selected release];
     [_nearbyVenues release];
     [_reachedHost release];
     [_alertView release];
     [_distance release];
+    [_query release];
     [_currentLocation release];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
     [super dealloc];
@@ -154,6 +153,7 @@
     [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     //initiate the searching distance
     self.distance=[NSNumber numberWithFloat:defaultDistance];
+    self.query=@"coffee shop";
     //if the device is ios7
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
     {
@@ -190,9 +190,9 @@
 
 - (void)proccessAnnotations {
     [self removeAllAnnotationExceptOfCurrentUser];
-    
+    //add standard annotation view to map view
     //[self.mapView addAnnotations:self.nearbyVenues];
-     //alternatively to add annotations for future use
+     //alternatively to add customized annotation view
     for (FSVenue* venue in self.nearbyVenues)
     {
         NSString* subtitle=nil;
@@ -207,17 +207,19 @@
     
 }
 
-- (void)getVenuesForLocation:(CLLocation *)location radius:(NSNumber*)radius {
-    
+- (BOOL)getVenuesForLocation:(CLLocation *)location
+{
+    __block BOOL searchResult=NO;
     [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
                                  longitude:@(location.coordinate.longitude)
-                                     query:@"coffee shops"
+                                     query:self.query
                                      limit:nil
                                     intent:intentCheckin
-                                    radius:radius
+                                    radius:self.distance
                                 categoryId:nil
                                   callback:^(BOOL success, id result){
-                                      if (success) {
+                                      if (success)//This is a branch for sucess
+                                      {
                                           
                                           NSDictionary *dic = result;
                                           NSArray *venues = [dic valueForKeyPath:@"response.venues"];
@@ -225,9 +227,11 @@
                                           self.nearbyVenues = [converter convertToObjects:venues];
                                           [self.tableView reloadData];
                                           [self proccessAnnotations];
+                                          searchResult=YES;
+                                          
                                           
                                       }
-                                      else
+                                      else//This is a branch for failure
                                       {
                                           MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
                                           [self.view addSubview:HUD];
@@ -240,8 +244,11 @@
                                               //[HUD release];
                                               //HUD = nil;
                                           }];
+                                          searchResult=NO;
+                                          
                                       }
                                   }];
+    return searchResult;
 }
 
 - (void)setupMapForLocatoion:(CLLocation *)newLocation
@@ -278,8 +285,6 @@
     }
     [self.phoneCallWebView loadRequest:[NSURLRequest requestWithURL:phoneURL]];
     */
-    
-    
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",phoneNum]]];
 }
 
@@ -312,7 +317,7 @@
     {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
     }
-    
+    cell.detailTextLabel.numberOfLines = maxLinesInACell;
     FSVenue *venue = self.nearbyVenues[indexPath.row];
     cell.textLabel.text = [venue name];
     //deal with the different cases for the address, contact
@@ -321,13 +326,13 @@
     {
         if (![venue.location.contact isKindOfClass:[NSString class]])
         {
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m, Address:%@",
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m\nAddress:%@",
                                          venue.location.distance,
                                          venue.location.address];
 
         }
         else if([venue.location.contact isKindOfClass:[NSString class]])
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m Address:%@ Phone:%@",
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m\nAddress:%@\nPhone:%@",
                                          venue.location.distance,
                                          venue.location.address,venue.location.contact];
 
@@ -339,7 +344,7 @@
             cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m",
                                      venue.location.distance];
         else if([venue.location.contact isKindOfClass:[NSString class]])
-            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m Phone:%@",
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m\nPhone:%@",
                                          venue.location.distance,
                                          venue.location.contact];
             
@@ -348,48 +353,11 @@
 
 
 }
-/*
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
- {
-     FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
-     if ([venue.location.contact isKindOfClass:[NSString class]])
-     {
-         //if the device is a phone, user can make a call by slipping the selected item to select the contack button
-         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-
-             return YES;
-         
-     }
-     return NO;
-
- }
-
- - (NSString *)tableView:(UITableView *)tableView
- titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
- {
-     FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
-     if ([venue.location.contact isKindOfClass:[NSString class]])
-     {
-         //if the device is a phone, user can make a call by slipping the selected item to select the contack button
-         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-             return @"Contact";
-         
-     }
-     return nil;
-
- }
-
- -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
- {
-     FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
-     if ([venue.location.contact isKindOfClass:[NSString class]])
-     {  //if the device is a phone, user can make a call by slipping the selected item to select the contack button
-         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-             [self makeACall:venue.location.contact];
-         
-     }
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return tableCellHeight;
+    
 }
- */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FSVenue *venue = self.nearbyVenues[indexPath.row];
@@ -418,12 +386,13 @@
 #pragma CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
-           fromLocation:(CLLocation *)oldLocation {
+           fromLocation:(CLLocation *)oldLocation
+{
     [self.locationManager stopUpdatingLocation];
     self.currentLocation=newLocation;
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable)
     {
-        [self getVenuesForLocation:newLocation radius:self.distance];
+        [self getVenuesForLocation:newLocation ];
     }
     
     [self setupMapForLocatoion:newLocation];
@@ -464,8 +433,6 @@
     {
         return nil;
     }
-    
-    
     TestAnnotation * senderAnnotation =nil;
     senderAnnotation=(TestAnnotation *)annotation;
     NSString * pinReusableIdentifier = @"testIdentifier";
@@ -502,7 +469,6 @@
     return  annotationView;
    
 }
-
 #pragma UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -513,16 +479,11 @@
         self.distance=[NSNumber numberWithFloat:[radiusString floatValue]] ;
         if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable)
         {
-            [self getVenuesForLocation:self.currentLocation radius:self.distance];
+            [self getVenuesForLocation:self.currentLocation ];
         }
         
         [self setupMapForLocatoion:self.currentLocation];
     }
     
 }
-
-
-
-
-
 @end

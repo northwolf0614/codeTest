@@ -14,6 +14,11 @@
 #define secret_passWords @"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
 #define callBackURL @"codeTest://foursquare"
 
+@interface CodeTestAppDelegate()
+@property (nonatomic, retain) UINavigationController *navigationController;
+@property (nonatomic, retain) CodeTestViewController *rootviewController;
+@end
+
 @implementation CodeTestAppDelegate
 -(void)dealloc
 {
@@ -31,8 +36,8 @@
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
     [Foursquare2 setupFoursquareWithClientId:client_ID
-                                 secret:secret_passWords
-                                 callbackURL:callBackURL];
+                               secret:secret_passWords
+                           callbackURL:callBackURL];
     return YES;
     
 }
