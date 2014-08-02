@@ -9,7 +9,7 @@ codeTest
 
 1.3 how to run: menu:produtc->run
 
-1.4 how to do unit test menu:product-test
+1.4 how to do unit test menu:product->test
 
 2 Where this code can be run or unit tested
 
