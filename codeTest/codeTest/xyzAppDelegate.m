@@ -11,13 +11,20 @@
 #import "xyzAppDelegate.h"
 
 @implementation xyzAppDelegate
+-(void)dealloc
+{
+    [_window release];
+    [_rootviewController release];
+    [_navigationController release];
+    [super dealloc];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] ;
+    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
-    self.rootviewController = [[XYZViewController alloc] init] ;
-    self.navigationController = [[UINavigationController alloc] initWithRootViewController:self.rootviewController] ;
+    self.rootviewController = [[[XYZViewController alloc] init] autorelease] ;
+    self.navigationController = [[[UINavigationController alloc] initWithRootViewController:self.rootviewController] autorelease];
     
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];

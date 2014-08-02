@@ -10,6 +10,7 @@
 		07B105AF2DE64196904CE83E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D6BE66679649C48103AF04 /* libPods.a */; };
 		09674F38198B3B54005BEEEC /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09674F37198B3B54005BEEEC /* TestAnnotation.m */; };
 		098004D8198BBB370036DF3D /* PhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 098004D7198BBB370036DF3D /* PhoneButton.m */; };
+		098004DB198C65D80036DF3D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 098004DA198C65D80036DF3D /* Reachability.m */; };
 		09BAC975198A6C8A00DA2C58 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC974198A6C8A00DA2C58 /* Foundation.framework */; };
 		09BAC977198A6C8A00DA2C58 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC976198A6C8A00DA2C58 /* CoreGraphics.framework */; };
 		09BAC979198A6C8A00DA2C58 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC978198A6C8A00DA2C58 /* UIKit.framework */; };
@@ -45,6 +46,8 @@
 		09674F37198B3B54005BEEEC /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAnnotation.m; sourceTree = "<group>"; };
 		098004D6198BBB370036DF3D /* PhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneButton.h; sourceTree = "<group>"; };
 		098004D7198BBB370036DF3D /* PhoneButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneButton.m; sourceTree = "<group>"; };
+		098004D9198C65D80036DF3D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		098004DA198C65D80036DF3D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		09BAC971198A6C8A00DA2C58 /* codeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = codeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BAC974198A6C8A00DA2C58 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		09BAC976198A6C8A00DA2C58 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -150,6 +153,8 @@
 				09674F39198B446D005BEEEC /* iPad */,
 				09BAC983198A6C8A00DA2C58 /* xyzAppDelegate.h */,
 				09BAC984198A6C8A00DA2C58 /* xyzAppDelegate.m */,
+				098004D9198C65D80036DF3D /* Reachability.h */,
+				098004DA198C65D80036DF3D /* Reachability.m */,
 				098004D6198BBB370036DF3D /* PhoneButton.h */,
 				098004D7198BBB370036DF3D /* PhoneButton.m */,
 				09E3338F198B0C8400F9D7C9 /* FSConverter.h */,
@@ -329,6 +334,7 @@
 			files = (
 				09BAC98B198A6C8A00DA2C58 /* xyzViewController.m in Sources */,
 				098004D8198BBB370036DF3D /* PhoneButton.m in Sources */,
+				098004DB198C65D80036DF3D /* Reachability.m in Sources */,
 				09E33393198B0C8400F9D7C9 /* FSConverter.m in Sources */,
 				09674F38198B3B54005BEEEC /* TestAnnotation.m in Sources */,
 				09BAC985198A6C8A00DA2C58 /* xyzAppDelegate.m in Sources */,
@@ -451,6 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "codeTest/codeTest-Prefix.pch";
 				INFOPLIST_FILE = "codeTest/codeTest-Info.plist";
@@ -467,6 +474,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "codeTest/codeTest-Prefix.pch";
 				INFOPLIST_FILE = "codeTest/codeTest-Info.plist";

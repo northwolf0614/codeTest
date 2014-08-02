@@ -9,6 +9,14 @@
 #import "TestAnnotation.h"
 
 @implementation TestAnnotation
+-(void)dealloc
+{
+    [_title release];
+    
+    [_subtitle release];
+    [super dealloc];
+
+}
 -(id)initWithCoordinates:(CLLocationCoordinate2D)paramCoordinates title:(NSString *)paramTitle
                 subTitle:(NSString *)paramSubitle
 {

@@ -5,44 +5,151 @@
 //  Created by linchuang on 31/07/2014.
 //  Copyright (c) 2014 codeTest. All rights reserved.
 //
+#import <CoreLocation/CoreLocation.h>
+#import <MapKit/MapKit.h>
 #import "xyzViewController.h"
 #import "Foursquare2.h"
 #import "FSVenue.h"
 #import "FSConverter.h"
-#import <CoreLocation/CoreLocation.h>
-#import <MapKit/MapKit.h>
 #import "TestAnnotation.h"
 #import "PhoneButton.h"
-@interface XYZViewController ()<CLLocationManagerDelegate,MKMapViewDelegate>
+#import "MBProgressHUD.h"
+#import "Reachability.h"
+
+#define indicatingWindowShowingTime 3
+#define defaultDistance 3000
+
+@interface XYZViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) MKMapView *mapView;
-//@property (strong, nonatomic) UIView *footer;
+@property(strong,nonatomic) CLLocation *currentLocation;
 @property(strong,nonatomic) UIWebView* phoneCallWebView;
-
 @property (strong, nonatomic) FSVenue *selected;
 @property (strong, nonatomic) NSArray *nearbyVenues;
+@property (strong,nonatomic)Reachability* reachedHost;
+@property(strong,nonatomic) UIAlertView* alertView;
+@property(nonatomic,strong) NSNumber* distance;
 
 
 @end
 
 @implementation XYZViewController
+-(void)dealloc
+{
+    
+    self.mapView.delegate=nil;
+    self.locationManager.delegate=nil;
+    [_locationManager release];
+    [_mapView release];
+    [_phoneCallWebView release];
+    [_selected release];
+    [_nearbyVenues release];
+    [_reachedHost release];
+    [_alertView release];
+    [_distance release];
+    [_currentLocation release];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kReachabilityChangedNotification object:nil];
+    [super dealloc];
+
+}
+-(void)networkChanged:(NSNotification *)note
+{
+    
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable&&[[Reachability reachabilityForLocalWiFi] currentReachabilityStatus]==NotReachable)
+    {
+        //NSLog(@"connection transferred to 2G/3G mode");
+        {
+            MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
+            [self.view addSubview:HUD];
+            HUD.labelText = @"Connection transferred to 2G/3G mode. Charges may be applied!";
+            HUD.mode = MBProgressHUDModeText;
+            [HUD showAnimated:YES whileExecutingBlock:^{
+                sleep(indicatingWindowShowingTime);
+            } completionBlock:^{
+                [HUD removeFromSuperview];
+                //[HUD release];
+                //HUD = nil;
+            }];
+            
+        }
+        
+    }
+    if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus]!=NotReachable)
+    {
+        //NSLog(@"network has been transferred to local wifi mode");
+        {
+            MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
+            [self.view addSubview:HUD];
+            HUD.labelText = @"connection tansferred to WIFI mode";
+            HUD.mode = MBProgressHUDModeText;
+            [HUD showAnimated:YES whileExecutingBlock:^{
+                sleep(indicatingWindowShowingTime);
+            } completionBlock:^{
+                [HUD removeFromSuperview];
+                //[HUD release];
+                //HUD = nil;
+            }];
+            
+        }
+        
+    }
+    if ([[Reachability  reachabilityForInternetConnection] currentReachabilityStatus]==NotReachable)
+    {
+        {
+            MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
+            [self.view addSubview:HUD];
+            HUD.labelText = @"connection broken";
+            HUD.mode = MBProgressHUDModeText;
+            [HUD showAnimated:YES whileExecutingBlock:^{
+                sleep(indicatingWindowShowingTime);
+            } completionBlock:^{
+                [HUD removeFromSuperview];
+                //[HUD release];
+                //HUD = nil;
+            }];
+            
+        }
+        
+    }
+    
+}
+-(void)handlerightButtonItem:(id) sender
+{
+    [self.alertView show];
+    
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     CGRect rect= [self.view frame];
-    self.title = @"Map View";
-    self.mapView= [[MKMapView alloc] initWithFrame:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height/3)];
+    self.title = @"Searching Map";
+    self.mapView= [[[MKMapView alloc] initWithFrame:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height/2)] autorelease];
     self.tableView.tableHeaderView = self.mapView;
     [[self mapView] setDelegate:self];
     self.mapView.showsUserLocation=YES;
     //self.tableView.tableFooterView = self.footer;
-    self.locationManager = [[CLLocationManager alloc]init];
+    self.locationManager = [[[CLLocationManager alloc]init] autorelease];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.delegate = self;
     [self.locationManager startUpdatingLocation];
+    
+    self.reachedHost= [Reachability reachabilityWithHostName:@"www.foursquare.com"] ;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkChanged:) name:kReachabilityChangedNotification object:nil];
+    [[self reachedHost] startNotifier];
+    
+    UIBarButtonItem *rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(handlerightButtonItem:)] autorelease];
+    self.navigationItem.rightBarButtonItem = rightBarButtonItem;
+    
+    self.alertView = [[[UIAlertView alloc] initWithTitle:@"searching radius setting" message:@"searching radius(metres):" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"apply", nil] autorelease];
+    self.alertView.delegate=self;
+    [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
+    
+    self.distance=[NSNumber numberWithFloat:defaultDistance];
+
+
     
 }
 
@@ -53,7 +160,7 @@
     
 }
 - (void)removeAllAnnotationExceptOfCurrentUser {
-    NSMutableArray *annForRemove = [[NSMutableArray alloc] initWithArray:self.mapView.annotations];
+    NSMutableArray *annForRemove = [[[NSMutableArray alloc] initWithArray:self.mapView.annotations] autorelease];
     if ([self.mapView.annotations.lastObject isKindOfClass:[MKUserLocation class]]) {
         [annForRemove removeObject:self.mapView.annotations.lastObject];
     } else {
@@ -87,47 +194,50 @@
     
 }
 
-- (void)getVenuesForLocation:(CLLocation *)location {
+- (void)getVenuesForLocation:(CLLocation *)location radius:(NSNumber*)radius {
     
     [Foursquare2 venueSearchNearByLatitude:@(location.coordinate.latitude)
                                  longitude:@(location.coordinate.longitude)
                                      query:@"coffee shops"
                                      limit:nil
                                     intent:intentCheckin
-                                    radius:@(3000)
+                                    radius:radius
                                 categoryId:nil
                                   callback:^(BOOL success, id result){
                                       if (success) {
+                                          
                                           NSDictionary *dic = result;
                                           NSArray *venues = [dic valueForKeyPath:@"response.venues"];
-                                          FSConverter *converter = [[FSConverter alloc]init];
+                                          FSConverter *converter = [[[FSConverter alloc]init] autorelease];
                                           self.nearbyVenues = [converter convertToObjects:venues];
                                           [self.tableView reloadData];
                                           [self proccessAnnotations];
                                           
+                                      }
+                                      else
+                                      {
+                                          MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
+                                          [self.view addSubview:HUD];
+                                          HUD.labelText = @"Getting nearby favouriate sites fail ";
+                                          HUD.mode = MBProgressHUDModeText;
+                                          [HUD showAnimated:YES whileExecutingBlock:^{
+                                              sleep(indicatingWindowShowingTime);
+                                          } completionBlock:^{
+                                              [HUD removeFromSuperview];
+                                              //[HUD release];
+                                              //HUD = nil;
+                                          }];
                                       }
                                   }];
 }
 
 - (void)setupMapForLocatoion:(CLLocation *)newLocation
 {
-    /*
-    MKCoordinateRegion region;
-    MKCoordinateSpan span;
-    span.latitudeDelta = 0.00003;
-    span.longitudeDelta = 0.00003;
-    CLLocationCoordinate2D location;
-    location.latitude = newLocation.coordinate.latitude;
-    location.longitude = newLocation.coordinate.longitude;
-    region.span = span;
-    region.center = location;
-    [self.mapView setRegion:region animated:YES];
-     */
     
      CLLocationCoordinate2D coordinate;
      coordinate.latitude = newLocation.coordinate.latitude;
      coordinate.longitude = newLocation.coordinate.longitude;
-     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, 3000, 3000);
+     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(coordinate, [self.distance doubleValue]*2,[self.distance doubleValue]*2);
      MKCoordinateRegion adjustedRegion = [self.mapView regionThatFits:viewRegion];
      [self.mapView setRegion:adjustedRegion animated:YES];
     
@@ -185,7 +295,7 @@
     
     if (cell == nil)
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
     }
     
     FSVenue *venue = self.nearbyVenues[indexPath.row];
@@ -270,11 +380,12 @@
             [self.mapView selectAnnotation:an animated:YES];
             MKCoordinateRegion region;
             MKCoordinateSpan span;
-            span.latitudeDelta = 0.00003;
-            span.longitudeDelta = 0.00003;
+            span.latitudeDelta = 0.005;
+            span.longitudeDelta = 0.005;
             region.span = span;
             region.center = venue.coordinate;
             [self.mapView setRegion:region animated:YES];
+            self.tableView.contentOffset=CGPointZero;
 
         }
     }
@@ -287,13 +398,31 @@
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation {
     [self.locationManager stopUpdatingLocation];
-    [self getVenuesForLocation:newLocation];
+    self.currentLocation=newLocation;
+    if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable)
+    {
+        [self getVenuesForLocation:newLocation radius:self.distance];
+    }
+    
     [self setupMapForLocatoion:newLocation];
     //[self showAnnotation:newLocation];
 }
 
 - (void)locationManager:(CLLocationManager *)manager
-       didFailWithError:(NSError *)error {
+       didFailWithError:(NSError *)error
+{
+    MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
+    [self.view addSubview:HUD];
+    HUD.labelText = @"Getting user's location fail ";
+    HUD.mode = MBProgressHUDModeText;
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        sleep(indicatingWindowShowingTime);
+    } completionBlock:^{
+        [HUD removeFromSuperview];
+        //[HUD release];
+        //HUD = nil;
+    }];
+
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -309,10 +438,10 @@
         return nil;
     }
     
-    //if(![mapView isEqual:self.mapView])
-    //{
-    //    return nil;
-    //}
+    if(![mapView isEqual:self.mapView])
+    {
+        return nil;
+    }
     
     
     TestAnnotation * senderAnnotation =nil;
@@ -321,7 +450,7 @@
     MKPinAnnotationView * annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:pinReusableIdentifier];
     if(annotationView == nil)
     {
-        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:senderAnnotation reuseIdentifier:pinReusableIdentifier];
+        annotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:senderAnnotation reuseIdentifier:pinReusableIdentifier] autorelease];
         [annotationView setCanShowCallout:YES];
         
     }
@@ -348,6 +477,27 @@
     return  annotationView;
    
 }
+
+#pragma UIAlertViewDelegate
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSString* radiusString=nil;
+    if (buttonIndex==1)
+    {
+        radiusString=[[self.alertView textFieldAtIndex:0] text];
+        self.distance=[NSNumber numberWithFloat:[radiusString floatValue]] ;
+        if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable)
+        {
+            [self getVenuesForLocation:self.currentLocation radius:self.distance];
+        }
+        
+        [self setupMapForLocatoion:self.currentLocation];
+    }
+    
+   
+    
+}
+
 
 
 

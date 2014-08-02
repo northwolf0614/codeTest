@@ -9,7 +9,11 @@
 #import "PhoneButton.h"
 
 @implementation PhoneButton
-
+-(void)dealloc
+{
+    [_phoneNumber release];
+    [super dealloc];
+}
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
