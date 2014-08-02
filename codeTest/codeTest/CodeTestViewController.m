@@ -16,11 +16,11 @@
 #import "MBProgressHUD.h"
 #import "Reachability.h"
 
-#define indicatingWindowShowingTime 3
-#define defaultDistance 3000
-#define reachabilityTestURL @"www.foursquare.com"
-#define deltaOfLatitude 0.005
-#define deltaOfLongtitude 0.005
+#define indicatingWindowShowingTime         3
+#define defaultDistance                     3000
+#define reachabilityTestURL                 @"www.foursquare.com"
+#define deltaOfLatitude                     0.005
+#define deltaOfLongtitude                   0.005
 
 @interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
@@ -30,7 +30,7 @@
 @property (retain,  nonatomic) UIWebView* phoneCallWebView;
 @property (retain,  nonatomic) FSVenue *selected;
 @property (retain,  nonatomic) NSArray *nearbyVenues;
-@property (retain,  nonatomic)Reachability* reachedHost;
+@property (retain,  nonatomic) Reachability* reachedHost;
 @property (retain,  nonatomic) UIAlertView* alertView;
 @property (retain,  nonatomic) NSNumber* distance;
 
@@ -66,7 +66,7 @@
         {
             MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
             [self.view addSubview:HUD];
-            HUD.labelText = @"Connection transferred to 2G/3G mode. Charges may be applied!";
+            HUD.labelText = @"Transferred to 2G/3G mode";
             HUD.mode = MBProgressHUDModeText;
             [HUD showAnimated:YES whileExecutingBlock:^{
                 sleep(indicatingWindowShowingTime);
@@ -85,7 +85,7 @@
         {
             MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
             [self.view addSubview:HUD];
-            HUD.labelText = @"connection tansferred to WIFI mode";
+            HUD.labelText = @"Tansferred to WIFI mode";
             HUD.mode = MBProgressHUDModeText;
             [HUD showAnimated:YES whileExecutingBlock:^{
                 sleep(indicatingWindowShowingTime);
@@ -154,6 +154,13 @@
     [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     //initiate the searching distance
     self.distance=[NSNumber numberWithFloat:defaultDistance];
+    //if the device is ios7
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
+    {
+        
+        [self setEdgesForExtendedLayout:UIRectEdgeNone];
+    }
+
 
 
     
@@ -184,9 +191,10 @@
 - (void)proccessAnnotations {
     [self removeAllAnnotationExceptOfCurrentUser];
     
-    [self.mapView addAnnotations:self.nearbyVenues];
-    /* alternatively to add annotations for future use
-    for (FSVenue* venue in self.nearbyVenues) {
+    //[self.mapView addAnnotations:self.nearbyVenues];
+     //alternatively to add annotations for future use
+    for (FSVenue* venue in self.nearbyVenues)
+    {
         NSString* subtitle=nil;
         subtitle=venue.location.contact;
         NSString* tile=nil;
@@ -195,7 +203,8 @@
         [self.mapView addAnnotation:annotation];
         
     }
-     */
+    
+    
 }
 
 - (void)getVenuesForLocation:(CLLocation *)location radius:(NSNumber*)radius {
@@ -222,7 +231,7 @@
                                       {
                                           MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
                                           [self.view addSubview:HUD];
-                                          HUD.labelText = @"Getting nearby favouriate sites fail ";
+                                          HUD.labelText = @"Searching nearby fail ";
                                           HUD.mode = MBProgressHUDModeText;
                                           [HUD showAnimated:YES whileExecutingBlock:^{
                                               sleep(indicatingWindowShowingTime);
@@ -339,7 +348,7 @@
 
 
 }
-
+/*
  - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
  {
      FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
@@ -380,7 +389,7 @@
          
      }
 }
-
+ */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FSVenue *venue = self.nearbyVenues[indexPath.row];
@@ -405,6 +414,7 @@
 }
 
 
+
 #pragma CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
@@ -425,7 +435,7 @@
 {
     MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
     [self.view addSubview:HUD];
-    HUD.labelText = @"Getting user's location fail ";
+    HUD.labelText = @"Gettng location fail ";
     HUD.mode = MBProgressHUDModeText;
     [HUD showAnimated:YES whileExecutingBlock:^{
         sleep(indicatingWindowShowingTime);
@@ -465,6 +475,11 @@
         annotationView = [[[MKPinAnnotationView alloc] initWithAnnotation:senderAnnotation reuseIdentifier:pinReusableIdentifier] autorelease];
         [annotationView setCanShowCallout:YES];
         
+    }
+    else
+    {
+        annotationView.annotation=senderAnnotation;
+        annotationView.rightCalloutAccessoryView=nil;
     }
     
     if ([senderAnnotation.subtitle isKindOfClass:[NSString class]])

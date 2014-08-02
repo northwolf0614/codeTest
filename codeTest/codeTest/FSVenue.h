@@ -9,7 +9,7 @@
     CLLocationCoordinate2D _coordinate;
 }
 
-@property (nonatomic,assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic,assign)CLLocationCoordinate2D coordinate;
 @property (nonatomic,retain)NSNumber *distance;
 @property (nonatomic,retain)NSString *address;
 @property (nonatomic,retain)NSString* contact;
