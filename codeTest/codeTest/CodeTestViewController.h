@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface XYZViewController : UITableViewController
+@interface CodeTestViewController : UITableViewController
 
 @end

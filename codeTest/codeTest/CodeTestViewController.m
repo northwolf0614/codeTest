@@ -7,7 +7,7 @@
 //
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
-#import "xyzViewController.h"
+#import "CodeTestViewController.h"
 #import "Foursquare2.h"
 #import "FSVenue.h"
 #import "FSConverter.h"
@@ -22,7 +22,7 @@
 #define deltaOfLatitude 0.005
 #define deltaOfLongtitude 0.005
 
-@interface XYZViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
+@interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
 @property (retain,  nonatomic) CLLocationManager *locationManager;
 @property (retain,  nonatomic) MKMapView *mapView;
@@ -37,7 +37,7 @@
 
 @end
 
-@implementation XYZViewController
+@implementation CodeTestViewController
 -(void)dealloc
 {
     

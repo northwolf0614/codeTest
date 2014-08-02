@@ -1,5 +1,5 @@
 //
-//  xyzAppDelegate.h
+//  CodeTestAppDelegate.h
 //  codeTest
 //
 //  Created by linchuang on 31/07/2014.
@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "xyzViewController.h"
+#import "CodeTestViewController.h"
 
-@interface xyzAppDelegate : UIResponder <UIApplicationDelegate>
+@interface CodeTestAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, retain) UIWindow *window;
 @property (nonatomic, retain) UINavigationController *navigationController;
-@property (nonatomic, retain) XYZViewController *rootviewController;
+@property (nonatomic, retain) CodeTestViewController *rootviewController;
 
 @end

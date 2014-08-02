@@ -8,13 +8,13 @@
 
 
 #import "Foursquare2.h"
-#import "xyzAppDelegate.h"
+#import "CodeTestAppDelegate.h"
 
 #define client_ID @"ACAO2JPKM1MXHQJCK45IIFKRFR2ZVL0QASMCBCG5NPJQWF2G"
 #define secret_passWords @"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
 #define callBackURL @"codeTest://foursquare"
 
-@implementation xyzAppDelegate
+@implementation CodeTestAppDelegate
 -(void)dealloc
 {
     [_window release];
@@ -26,7 +26,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    self.rootviewController = [[[XYZViewController alloc] init] autorelease] ;
+    self.rootviewController = [[[CodeTestViewController alloc] init] autorelease] ;
     self.navigationController = [[[UINavigationController alloc] initWithRootViewController:self.rootviewController] autorelease];
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
