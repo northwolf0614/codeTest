@@ -10,6 +10,10 @@
 #import "Foursquare2.h"
 #import "xyzAppDelegate.h"
 
+#define client_ID @"ACAO2JPKM1MXHQJCK45IIFKRFR2ZVL0QASMCBCG5NPJQWF2G"
+#define secret_passWords @"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
+#define callBackURL @"codeTest://foursquare"
+
 @implementation xyzAppDelegate
 -(void)dealloc
 {
@@ -22,20 +26,13 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    
     self.rootviewController = [[[XYZViewController alloc] init] autorelease] ;
     self.navigationController = [[[UINavigationController alloc] initWithRootViewController:self.rootviewController] autorelease];
-    
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
-
-    
-    //[Foursquare2 setupFoursquareWithClientId:@"5P1OVCFK0CCVCQ5GBBCWRFGUVNX5R4WGKHL2DGJGZ32FDFKT"
-    //                                  secret:@"UPZJO0A0XL44IHCD1KQBMAYGCZ45Z03BORJZZJXELPWHPSAR"
-    //                             callbackURL:@"testapp123://foursquare"];
-    [Foursquare2 setupFoursquareWithClientId:@"ACAO2JPKM1MXHQJCK45IIFKRFR2ZVL0QASMCBCG5NPJQWF2G"
-                                 secret:@"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
-                                 callbackURL:@"codeTest://foursquare"];
+    [Foursquare2 setupFoursquareWithClientId:client_ID
+                                 secret:secret_passWords
+                                 callbackURL:callBackURL];
     return YES;
     
 }

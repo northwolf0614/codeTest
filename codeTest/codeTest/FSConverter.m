@@ -1,10 +1,3 @@
-//
-//  FSConverter.m
-//  Foursquare2-iOS
-//
-//  Created by Constantine Fry on 2/7/13.
-//
-//
 
 #import "FSConverter.h"
 #import "FSVenue.h"
@@ -26,6 +19,7 @@
                                                       [v[@"location"][@"lng"] doubleValue])];
         [objects addObject:ann];
     }
+    //sort the distance by asending order
     [objects sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         FSVenue *temp1=obj1;
         FSVenue *temp2=obj2;

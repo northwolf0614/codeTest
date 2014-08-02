@@ -18,18 +18,21 @@
 
 #define indicatingWindowShowingTime 3
 #define defaultDistance 3000
+#define reachabilityTestURL @"www.foursquare.com"
+#define deltaOfLatitude 0.005
+#define deltaOfLongtitude 0.005
 
 @interface XYZViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
-@property (strong, nonatomic) CLLocationManager *locationManager;
-@property (strong, nonatomic) MKMapView *mapView;
-@property(strong,nonatomic) CLLocation *currentLocation;
-@property(strong,nonatomic) UIWebView* phoneCallWebView;
-@property (strong, nonatomic) FSVenue *selected;
-@property (strong, nonatomic) NSArray *nearbyVenues;
-@property (strong,nonatomic)Reachability* reachedHost;
-@property(strong,nonatomic) UIAlertView* alertView;
-@property(nonatomic,strong) NSNumber* distance;
+@property (retain,  nonatomic) CLLocationManager *locationManager;
+@property (retain,  nonatomic) MKMapView *mapView;
+@property (retain,  nonatomic) CLLocation *currentLocation;
+@property (retain,  nonatomic) UIWebView* phoneCallWebView;
+@property (retain,  nonatomic) FSVenue *selected;
+@property (retain,  nonatomic) NSArray *nearbyVenues;
+@property (retain,  nonatomic)Reachability* reachedHost;
+@property (retain,  nonatomic) UIAlertView* alertView;
+@property (retain,  nonatomic) NSNumber* distance;
 
 
 @end
@@ -40,6 +43,7 @@
     
     self.mapView.delegate=nil;
     self.locationManager.delegate=nil;
+    self.alertView.delegate=nil;
     [_locationManager release];
     [_mapView release];
     [_phoneCallWebView release];
@@ -58,7 +62,7 @@
     
     if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable&&[[Reachability reachabilityForLocalWiFi] currentReachabilityStatus]==NotReachable)
     {
-        //NSLog(@"connection transferred to 2G/3G mode");
+        //connection transferred to 2G/3G mode
         {
             MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
             [self.view addSubview:HUD];
@@ -77,7 +81,7 @@
     }
     if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus]!=NotReachable)
     {
-        //NSLog(@"network has been transferred to local wifi mode");
+        //network has been transferred to local wifi mode
         {
             MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
             [self.view addSubview:HUD];
@@ -94,6 +98,7 @@
         }
         
     }
+    //not network connection
     if ([[Reachability  reachabilityForInternetConnection] currentReachabilityStatus]==NotReachable)
     {
         {
@@ -123,49 +128,50 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    //initiate tableview's header view using mapview
     CGRect rect= [self.view frame];
     self.title = @"Searching Map";
-    self.mapView= [[[MKMapView alloc] initWithFrame:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height/2)] autorelease];
+    self.mapView= [[[MKMapView alloc] initWithFrame:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height/3)] autorelease];
     self.tableView.tableHeaderView = self.mapView;
     [[self mapView] setDelegate:self];
+    //show the user's location
     self.mapView.showsUserLocation=YES;
-    //self.tableView.tableFooterView = self.footer;
+    //initiate the location manager
     self.locationManager = [[[CLLocationManager alloc]init] autorelease];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     self.locationManager.delegate = self;
     [self.locationManager startUpdatingLocation];
-    
-    self.reachedHost= [Reachability reachabilityWithHostName:@"www.foursquare.com"] ;
+    //initiate the reachability with reachabilityTest
+    self.reachedHost= [Reachability reachabilityWithHostName:reachabilityTestURL] ;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkChanged:) name:kReachabilityChangedNotification object:nil];
     [[self reachedHost] startNotifier];
-    
+    //initiate the rightButton of navigatioinItem
     UIBarButtonItem *rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(handlerightButtonItem:)] autorelease];
     self.navigationItem.rightBarButtonItem = rightBarButtonItem;
-    
+    //initiate alertview
     self.alertView = [[[UIAlertView alloc] initWithTitle:@"searching radius setting" message:@"searching radius(metres):" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"apply", nil] autorelease];
     self.alertView.delegate=self;
     [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
-    
+    //initiate the searching distance
     self.distance=[NSNumber numberWithFloat:defaultDistance];
 
 
     
 }
 
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    //[self updateRightBarButtonStatus];
-    
-}
-- (void)removeAllAnnotationExceptOfCurrentUser {
+- (void)removeAllAnnotationExceptOfCurrentUser
+{
     NSMutableArray *annForRemove = [[[NSMutableArray alloc] initWithArray:self.mapView.annotations] autorelease];
-    if ([self.mapView.annotations.lastObject isKindOfClass:[MKUserLocation class]]) {
+    if ([self.mapView.annotations.lastObject isKindOfClass:[MKUserLocation class]])
+    {
         [annForRemove removeObject:self.mapView.annotations.lastObject];
-    } else {
-        for (id <MKAnnotation> annot_ in self.mapView.annotations) {
-            if ([annot_ isKindOfClass:[MKUserLocation class]] ) {
+    }
+    else
+    {
+        for (id <MKAnnotation> annot_ in self.mapView.annotations)
+        {
+            if ([annot_ isKindOfClass:[MKUserLocation class]] )
+            {
                 [annForRemove removeObject:annot_];
                 break;
             }
@@ -179,7 +185,7 @@
     [self removeAllAnnotationExceptOfCurrentUser];
     
     [self.mapView addAnnotations:self.nearbyVenues];
-    /*
+    /* alternatively to add annotations for future use
     for (FSVenue* venue in self.nearbyVenues) {
         NSString* subtitle=nil;
         subtitle=venue.location.contact;
@@ -190,8 +196,6 @@
         
     }
      */
-
-    
 }
 
 - (void)getVenuesForLocation:(CLLocation *)location radius:(NSNumber*)radius {
@@ -257,10 +261,10 @@
 }
 -(void)makeACall:(NSString*) phoneNum
 {
-    /* alternatively to make a call
+    /*// alternatively to make a call for future use in case the app can not pass the apple's examination
     NSURL *phoneURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@",phoneNum]];
     if ( self.phoneCallWebView==nil) {
-        self.phoneCallWebView = [[UIWebView alloc] initWithFrame:CGRectZero];
+        self.phoneCallWebView = [[[UIWebView alloc] initWithFrame:CGRectZero] autorelease];
         
     }
     [self.phoneCallWebView loadRequest:[NSURLRequest requestWithURL:phoneURL]];
@@ -283,13 +287,15 @@
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.nearbyVenues.count) {
+    if (self.nearbyVenues.count)
+    {
         return 1;
     }
     return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    //reuse the table cell
     static NSString *cellIdentifier = @"testCell";
     UITableViewCell* cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
@@ -300,10 +306,12 @@
     
     FSVenue *venue = self.nearbyVenues[indexPath.row];
     cell.textLabel.text = [venue name];
+    //deal with the different cases for the address, contact
     if ([venue.location.address isKindOfClass:[NSString class]])
         
     {
-        if (![venue.location.contact isKindOfClass:[NSString class]]) {
+        if (![venue.location.contact isKindOfClass:[NSString class]])
+        {
             cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m, Address:%@",
                                          venue.location.distance,
                                          venue.location.address];
@@ -315,11 +323,11 @@
                                          venue.location.address,venue.location.contact];
 
             
-           }
+    }
     else
     {
         if (![venue.location.contact isKindOfClass:[NSString class]])
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m",
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m",
                                      venue.location.distance];
         else if([venue.location.contact isKindOfClass:[NSString class]])
             cell.detailTextLabel.text = [NSString stringWithFormat:@"Distance:%@m Phone:%@",
@@ -337,6 +345,7 @@
      FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
      if ([venue.location.contact isKindOfClass:[NSString class]])
      {
+         //if the device is a phone, user can make a call by slipping the selected item to select the contack button
          if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
 
              return YES;
@@ -352,6 +361,7 @@
      FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
      if ([venue.location.contact isKindOfClass:[NSString class]])
      {
+         //if the device is a phone, user can make a call by slipping the selected item to select the contack button
          if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
              return @"Contact";
          
@@ -364,7 +374,7 @@
  {
      FSVenue* venue=[[self nearbyVenues] objectAtIndex:indexPath.row];
      if ([venue.location.contact isKindOfClass:[NSString class]])
-     {
+     {  //if the device is a phone, user can make a call by slipping the selected item to select the contack button
          if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
              [self makeACall:venue.location.contact];
          
@@ -374,17 +384,19 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     FSVenue *venue = self.nearbyVenues[indexPath.row];
-    for (TestAnnotation* an in self.mapView.annotations) {
+    for (TestAnnotation* an in self.mapView.annotations)
+    {
         if (an.coordinate.latitude==venue.coordinate.latitude&&an.coordinate.longitude==venue.coordinate.longitude) {
             
             [self.mapView selectAnnotation:an animated:YES];
             MKCoordinateRegion region;
             MKCoordinateSpan span;
-            span.latitudeDelta = 0.005;
-            span.longitudeDelta = 0.005;
+            span.latitudeDelta=deltaOfLatitude;
+            span.longitudeDelta = deltaOfLongtitude;
             region.span = span;
             region.center = venue.coordinate;
             [self.mapView setRegion:region animated:YES];
+            //make the tableview to the origianl point to make users see the map conviniently
             self.tableView.contentOffset=CGPointZero;
 
         }
@@ -405,7 +417,7 @@
     }
     
     [self setupMapForLocatoion:newLocation];
-    //[self showAnnotation:newLocation];
+    
 }
 
 - (void)locationManager:(CLLocationManager *)manager
@@ -467,13 +479,11 @@
         }
         
     }
-    
-    
     annotationView.opaque = NO;
     annotationView.animatesDrop = YES;
     annotationView.draggable = NO;
     annotationView.selected = YES;
-    annotationView.calloutOffset = CGPointMake(5, 5);
+    annotationView.calloutOffset = CGPointZero;
     return  annotationView;
    
 }
@@ -493,8 +503,6 @@
         
         [self setupMapForLocatoion:self.currentLocation];
     }
-    
-   
     
 }
 
