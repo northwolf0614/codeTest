@@ -1,6 +1,6 @@
 1 How to run and test
 
-1.1 IDE: Xcode 5.1 with cocoaPods support
+1.1 IDE: Xcode 5.1 with cocoaPods installed
 
 1.2 project file: codeTest.xcworkspace
 
