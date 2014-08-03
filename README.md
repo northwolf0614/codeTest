@@ -3,7 +3,7 @@ codeTest
 
 1 How to run and test
 
-1.1 IDE: Xcode 5.1 
+1.1 IDE: Xcode 5.1 with CocoaPods installed properly
 
 1.2 project file: codeTest.xcworkspace
 
@@ -13,9 +13,11 @@ codeTest
 
 2 Where this code can be run or unit tested
 
-2.1 This code can be run or tested at iphone and iPad with IOS version ios6 and later
+2.1 This version is a universal one with auto layout support. So this code can be run or tested at iphone and iPad with IOS version ios6 and later
 
 2.2 This code also can be run or tested at simulator with some limitations. For more details please refer to the limitations for simulator 
+
+
 
 3 Contact
 
