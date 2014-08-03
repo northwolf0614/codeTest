@@ -15,7 +15,7 @@
 #import "Reachability.h"
 
 #define kIndicatingWindowShowingTime         3
-#define kDefaultDistance                     3000//in meter
+#define kDefaultDistance                     1000//in meter
 #define kReachabilityTestURL                 @"www.foursquare.com"
 #define kDeltaOfLatitude                     0.005
 #define kDeltaOfLongtitude                   0.005
@@ -160,7 +160,8 @@
     [self setupConstraintsInView];
     //initiate the location manager
     self.locationManager = [[[CLLocationManager alloc]init] autorelease];
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    //set the ordinary accuracy to help to save power
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
     self.locationManager.delegate = self;
     [self.locationManager startUpdatingLocation];
     //initiate the reachability with reachabilityTest
@@ -416,19 +417,8 @@
 - (void)locationManager:(CLLocationManager *)manager
        didFailWithError:(NSError *)error
 {
-    MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
-    [self.view addSubview:HUD];
-    HUD.labelText = @"Gettng location fail ";
-    HUD.mode = MBProgressHUDModeText;
-    [HUD showAnimated:YES whileExecutingBlock:^{
-        sleep(kIndicatingWindowShowingTime);
-    } completionBlock:^{
-        [HUD removeFromSuperview];
-        //[HUD release];
-        //HUD = nil;
-    }];
-
-    [self.locationManager stopUpdatingLocation];
+    
+    //[self.locationManager stopUpdatingLocation];
 }
 
 #pragma MKMapViewDelegate
@@ -501,13 +491,30 @@
     if (buttonIndex==1)
     {
         radiusString=[[self.alertView textFieldAtIndex:0] text];
-        self.distance=[NSNumber numberWithFloat:[radiusString floatValue]] ;
-        if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus]!=NotReachable)
+        if ([radiusString floatValue]<=0)
         {
-            [self getVenuesForLocation:self.currentLocation ];
+            MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
+            [self.view addSubview:HUD];
+            HUD.labelText = @"Searching radius wrong ";
+            HUD.mode = MBProgressHUDModeText;
+            [HUD showAnimated:YES whileExecutingBlock:^{
+                sleep(kIndicatingWindowShowingTime);
+            } completionBlock:^{
+                [HUD removeFromSuperview];
+                //[HUD release];
+                //HUD = nil;
+            }];
+
+            return;
+        }
+        else
+        {
+            self.distance=[NSNumber numberWithFloat:[radiusString floatValue]] ;
+            [self.locationManager startUpdatingLocation];
         }
         
-        [self setupMapForLocatoion:self.currentLocation];
+        
+        
     }
     
 }
