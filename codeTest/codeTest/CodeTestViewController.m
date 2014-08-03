@@ -11,18 +11,18 @@
 #import "FSVenue.h"
 #import "FSConverter.h"
 #import "TestAnnotation.h"
-#import "PhoneButton.h"
 #import "MBProgressHUD.h"
 #import "Reachability.h"
 
-#define indicatingWindowShowingTime         3
-#define defaultDistance                     3000//in meter
-#define reachabilityTestURL                 @"www.foursquare.com"
-#define deltaOfLatitude                     0.005
-#define deltaOfLongtitude                   0.005
-#define tableCellHeight                     60
-#define maxLinesInACell                      3
-#define fontSize                            15
+#define kIndicatingWindowShowingTime         3
+#define kDefaultDistance                     3000//in meter
+#define kReachabilityTestURL                 @"www.foursquare.com"
+#define kDeltaOfLatitude                     0.005
+#define kDeltaOfLongtitude                   0.005
+#define kTableCellHeight                     60
+#define kMaxLinesInACell                     3
+#define kFontSize                            15
+//#define TARGET_OS_IPHONE                    [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone
 
 @interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
 
@@ -69,7 +69,7 @@
             HUD.labelText = @"Transferred to 2G/3G mode";
             HUD.mode = MBProgressHUDModeText;
             [HUD showAnimated:YES whileExecutingBlock:^{
-                sleep(indicatingWindowShowingTime);
+                sleep(kIndicatingWindowShowingTime);
             } completionBlock:^{
                 [HUD removeFromSuperview];
                 //[HUD release];
@@ -88,7 +88,7 @@
             HUD.labelText = @"Tansferred to WIFI mode";
             HUD.mode = MBProgressHUDModeText;
             [HUD showAnimated:YES whileExecutingBlock:^{
-                sleep(indicatingWindowShowingTime);
+                sleep(kIndicatingWindowShowingTime);
             } completionBlock:^{
                 [HUD removeFromSuperview];
                 //[HUD release];
@@ -107,7 +107,7 @@
             HUD.labelText = @"connection broken";
             HUD.mode = MBProgressHUDModeText;
             [HUD showAnimated:YES whileExecutingBlock:^{
-                sleep(indicatingWindowShowingTime);
+                sleep(kIndicatingWindowShowingTime);
             } completionBlock:^{
                 [HUD removeFromSuperview];
                 //[HUD release];
@@ -142,7 +142,7 @@
     self.locationManager.delegate = self;
     [self.locationManager startUpdatingLocation];
     //initiate the reachability with reachabilityTest
-    self.reachedHost= [Reachability reachabilityWithHostName:reachabilityTestURL] ;
+    self.reachedHost= [Reachability reachabilityWithHostName:kReachabilityTestURL] ;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkChanged:) name:kReachabilityChangedNotification object:nil];
     [[self reachedHost] startNotifier];
     //initiate the rightButton of navigatioinItem
@@ -153,7 +153,7 @@
     self.alertView.delegate=self;
     [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     //initiate the searching distance
-    self.distance=[NSNumber numberWithFloat:defaultDistance];
+    self.distance=[NSNumber numberWithFloat:kDefaultDistance];
     self.query=@"coffee shop";
     //if the device is ios7
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)])
@@ -191,16 +191,13 @@
 
 - (void)proccessAnnotations {
     [self removeAllAnnotationExceptOfCurrentUser];
-    //add standard annotation view to map view
-    //[self.mapView addAnnotations:self.nearbyVenues];
-     //alternatively to add customized annotation view
     for (FSVenue* venue in self.nearbyVenues)
     {
         NSString* subtitle=nil;
         subtitle=venue.location.contact;
         NSString* tile=nil;
         tile=venue.name;
-        TestAnnotation* annotation= [[TestAnnotation alloc] initWithCoordinates:venue.coordinate title:tile subTitle:subtitle];
+        TestAnnotation* annotation= [[[TestAnnotation alloc] initWithCoordinates:venue.coordinate title:tile subTitle:subtitle] autorelease];
         [self.mapView addAnnotation:annotation];
         
     }
@@ -239,7 +236,7 @@
                                           HUD.labelText = @"Searching nearby fail ";
                                           HUD.mode = MBProgressHUDModeText;
                                           [HUD showAnimated:YES whileExecutingBlock:^{
-                                              sleep(indicatingWindowShowingTime);
+                                              sleep(kIndicatingWindowShowingTime);
                                           } completionBlock:^{
                                               [HUD removeFromSuperview];
                                               //[HUD release];
@@ -265,17 +262,6 @@
 }
 
 
--(void)contactIsPressed:(id)sender
-{
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-        if ([sender isKindOfClass:[PhoneButton class]])
-        {
-            NSString* callNumber=[(PhoneButton*)sender phoneNumber];
-            [self makeACall:callNumber];
-        }
-    
-    
-}
 -(void)makeACall:(NSString*) phoneNum
 {
     /*// alternatively to make a call for future use in case the app can not pass the apple's examination
@@ -318,10 +304,10 @@
     {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
     }
-    cell.detailTextLabel.numberOfLines = maxLinesInACell;
+    cell.detailTextLabel.numberOfLines = kMaxLinesInACell;
     FSVenue *venue = self.nearbyVenues[indexPath.row];
     cell.textLabel.text = [venue name];
-    cell.textLabel.font= [UIFont fontWithName:@"Arial" size:fontSize];
+    cell.textLabel.font= [UIFont fontWithName:@"Arial" size:kFontSize];
     cell.textLabel.textColor= [UIColor blueColor];
     //deal with the different cases for the address, contact
     if ([venue.location.address isKindOfClass:[NSString class]])
@@ -358,7 +344,7 @@
 }
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return tableCellHeight;
+    return kTableCellHeight;
     
 }
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -371,8 +357,8 @@
             [self.mapView selectAnnotation:an animated:YES];
             MKCoordinateRegion region;
             MKCoordinateSpan span;
-            span.latitudeDelta=deltaOfLatitude;
-            span.longitudeDelta = deltaOfLongtitude;
+            span.latitudeDelta=kDeltaOfLatitude;
+            span.longitudeDelta = kDeltaOfLongtitude;
             region.span = span;
             region.center = venue.coordinate;
             [self.mapView setRegion:region animated:YES];
@@ -383,6 +369,7 @@
     }
 
 }
+
 
 
 
@@ -410,7 +397,7 @@
     HUD.labelText = @"Gettng location fail ";
     HUD.mode = MBProgressHUDModeText;
     [HUD showAnimated:YES whileExecutingBlock:^{
-        sleep(indicatingWindowShowingTime);
+        sleep(kIndicatingWindowShowingTime);
     } completionBlock:^{
         [HUD removeFromSuperview];
         //[HUD release];
@@ -452,18 +439,14 @@
         annotationView.rightCalloutAccessoryView=nil;
     }
     
-    if ([senderAnnotation.subtitle isKindOfClass:[NSString class]])
+    
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
     {
-        //if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-        {
-            PhoneButton * button = [PhoneButton buttonWithType:UIButtonTypeInfoLight];
-            button.phoneNumber=senderAnnotation.subtitle;
-            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
-            [button addTarget:self action:@selector(contactIsPressed:) forControlEvents:UIControlEventTouchUpInside];
-            annotationView.rightCalloutAccessoryView = button;
-        }
-        
+        UIButton * button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+        annotationView.rightCalloutAccessoryView = button;
     }
+        
+    
     annotationView.opaque = NO;
     annotationView.animatesDrop = YES;
     annotationView.draggable = NO;
@@ -472,6 +455,21 @@
     return  annotationView;
    
 }
+
+#if TARGET_OS_IPHONE
+// mapView:annotationView:calloutAccessoryControlTapped: is called when the user taps on left & right callout accessory UIControls.
+- (void)mapView:(MKMapView *)mapView annotationView:(MKAnnotationView *)view calloutAccessoryControlTapped:(UIControl *)control
+{
+    if([view.annotation isKindOfClass:[TestAnnotation class]])
+        if([view.annotation.subtitle isKindOfClass:[NSString class]])
+            [self makeACall:view.annotation.subtitle];
+
+}
+
+
+#endif
+
+
 #pragma UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {

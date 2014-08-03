@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		07B105AF2DE64196904CE83E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D6BE66679649C48103AF04 /* libPods.a */; };
 		09674F38198B3B54005BEEEC /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09674F37198B3B54005BEEEC /* TestAnnotation.m */; };
-		098004D8198BBB370036DF3D /* PhoneButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 098004D7198BBB370036DF3D /* PhoneButton.m */; };
 		098004DB198C65D80036DF3D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 098004DA198C65D80036DF3D /* Reachability.m */; };
 		09BAC975198A6C8A00DA2C58 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC974198A6C8A00DA2C58 /* Foundation.framework */; };
 		09BAC977198A6C8A00DA2C58 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC976198A6C8A00DA2C58 /* CoreGraphics.framework */; };
@@ -44,8 +43,6 @@
 /* Begin PBXFileReference section */
 		09674F36198B3B54005BEEEC /* TestAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAnnotation.h; sourceTree = "<group>"; };
 		09674F37198B3B54005BEEEC /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAnnotation.m; sourceTree = "<group>"; };
-		098004D6198BBB370036DF3D /* PhoneButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhoneButton.h; sourceTree = "<group>"; };
-		098004D7198BBB370036DF3D /* PhoneButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhoneButton.m; sourceTree = "<group>"; };
 		098004D9198C65D80036DF3D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		098004DA198C65D80036DF3D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		09BAC971198A6C8A00DA2C58 /* codeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = codeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,8 +144,6 @@
 				09BAC984198A6C8A00DA2C58 /* CodeTestAppDelegate.m */,
 				098004D9198C65D80036DF3D /* Reachability.h */,
 				098004DA198C65D80036DF3D /* Reachability.m */,
-				098004D6198BBB370036DF3D /* PhoneButton.h */,
-				098004D7198BBB370036DF3D /* PhoneButton.m */,
 				09E3338F198B0C8400F9D7C9 /* FSConverter.h */,
 				09E33390198B0C8400F9D7C9 /* FSConverter.m */,
 				09E33391198B0C8400F9D7C9 /* FSVenue.h */,
@@ -325,7 +320,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				09BAC98B198A6C8A00DA2C58 /* CodeTestViewController.m in Sources */,
-				098004D8198BBB370036DF3D /* PhoneButton.m in Sources */,
 				098004DB198C65D80036DF3D /* Reachability.m in Sources */,
 				09E33393198B0C8400F9D7C9 /* FSConverter.m in Sources */,
 				09674F38198B3B54005BEEEC /* TestAnnotation.m in Sources */,

@@ -22,11 +22,8 @@
         [objects addObject:ann];
     }
     //sort the distance by asending order
-    [objects sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-        FSVenue *temp1=obj1;
-        FSVenue *temp2=obj2;
-        
-        return  [temp1.location.distance compare:temp2.location.distance];
+    [objects sortUsingComparator:^NSComparisonResult(FSVenue * obj1, FSVenue * obj2) {
+        return  [obj1.location.distance compare:obj2.location.distance];
     }];
     return objects;
 }

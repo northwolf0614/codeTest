@@ -10,9 +10,9 @@
 #import "Foursquare2.h"
 #import "CodeTestAppDelegate.h"
 
-#define client_ID @"ACAO2JPKM1MXHQJCK45IIFKRFR2ZVL0QASMCBCG5NPJQWF2G"
-#define secret_passWords @"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
-#define callBackURL @"codeTest://foursquare"
+#define kClient_ID @"ACAO2JPKM1MXHQJCK45IIFKRFR2ZVL0QASMCBCG5NPJQWF2G"
+#define kSecret_passWords @"YZCKUYJ1WHUV2QICBXUBEILZI1DMPUIDP5SHV043O04FKBHL"
+#define kCallBackURL @"codeTest://foursquare"
 
 @interface CodeTestAppDelegate()
 @property (nonatomic, retain) UINavigationController *navigationController;
@@ -35,9 +35,9 @@
     self.navigationController = [[[UINavigationController alloc] initWithRootViewController:self.rootviewController] autorelease];
     self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
-    [Foursquare2 setupFoursquareWithClientId:client_ID
-                               secret:secret_passWords
-                           callbackURL:callBackURL];
+    [Foursquare2 setupFoursquareWithClientId:kClient_ID
+                               secret:kSecret_passWords
+                           callbackURL:kCallBackURL];
     return YES;
     
 }
