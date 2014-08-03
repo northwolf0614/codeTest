@@ -1,5 +1,5 @@
 //
-//  xyzViewController.m
+//  CodeTestViewController.m
 //  codeTest
 //
 //  Created by linchuang on 31/07/2014.

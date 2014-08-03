@@ -1,5 +1,5 @@
 //
-//  xyzAppDelegate.m
+//  CodeTestAppDelegate.m
 //  codeTest
 //
 //  Created by linchuang on 31/07/2014.
