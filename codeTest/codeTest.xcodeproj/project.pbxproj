@@ -10,6 +10,7 @@
 		07B105AF2DE64196904CE83E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66D6BE66679649C48103AF04 /* libPods.a */; };
 		09674F38198B3B54005BEEEC /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 09674F37198B3B54005BEEEC /* TestAnnotation.m */; };
 		098004DB198C65D80036DF3D /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 098004DA198C65D80036DF3D /* Reachability.m */; };
+		0981DC44198E372B00E75D22 /* readMe in Resources */ = {isa = PBXBuildFile; fileRef = 0981DC43198E372B00E75D22 /* readMe */; };
 		09BAC975198A6C8A00DA2C58 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC974198A6C8A00DA2C58 /* Foundation.framework */; };
 		09BAC977198A6C8A00DA2C58 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC976198A6C8A00DA2C58 /* CoreGraphics.framework */; };
 		09BAC979198A6C8A00DA2C58 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09BAC978198A6C8A00DA2C58 /* UIKit.framework */; };
@@ -45,6 +46,7 @@
 		09674F37198B3B54005BEEEC /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestAnnotation.m; sourceTree = "<group>"; };
 		098004D9198C65D80036DF3D /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		098004DA198C65D80036DF3D /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		0981DC43198E372B00E75D22 /* readMe */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = readMe; path = codeTest/readMe; sourceTree = "<group>"; };
 		09BAC971198A6C8A00DA2C58 /* codeTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = codeTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		09BAC974198A6C8A00DA2C58 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		09BAC976198A6C8A00DA2C58 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -105,6 +107,7 @@
 		09BAC968198A6C8A00DA2C58 = {
 			isa = PBXGroup;
 			children = (
+				0981DC43198E372B00E75D22 /* readMe */,
 				09BAC97A198A6C8A00DA2C58 /* codeTest */,
 				09BAC999198A6C8A00DA2C58 /* codeTestTests */,
 				09BAC973198A6C8A00DA2C58 /* Frameworks */,
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				09BAC98D198A6C8A00DA2C58 /* Images.xcassets in Resources */,
+				0981DC44198E372B00E75D22 /* readMe in Resources */,
 				09BAC97F198A6C8A00DA2C58 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

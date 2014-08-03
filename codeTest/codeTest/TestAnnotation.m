@@ -11,8 +11,8 @@
 @implementation TestAnnotation
 -(void)dealloc
 {
-    [_title release];
     [_subtitle release];
+    [_title release];
     [super dealloc];
 
 }
@@ -23,9 +23,8 @@
     if(self != nil)
     {
         _coordinate = paramCoordinates;
-        _title = paramTitle;
-        _subtitle = paramSubitle;
-        _pinColor = MKPinAnnotationColorGreen;
+        _title = [paramTitle copy];
+        _subtitle = [paramSubitle copy];
     }
     return self;
 }

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface CodeTestViewController : UITableViewController
+@interface CodeTestViewController : UIViewController
 @property (nonatomic,copy)   NSString* query;
 @property (nonatomic,retain) NSNumber* distance;
 -(BOOL)getVenuesForLocation:(CLLocation *)location;

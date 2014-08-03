@@ -15,8 +15,6 @@
 @property (nonatomic,readonly)      CLLocationCoordinate2D coordinate;
 @property (nonatomic,copy,readonly) NSString * title;
 @property (nonatomic,copy,readonly) NSString * subtitle;
-@property (nonatomic,assign)        MKPinAnnotationColor pinColor;
-
 -(id)initWithCoordinates:(CLLocationCoordinate2D)paramCoordinates title:(NSString *)paramTitle
                 subTitle:(NSString *)paramTitle;
 

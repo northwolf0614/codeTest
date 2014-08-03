@@ -24,13 +24,13 @@
 #define kFontSize                            15
 //#define TARGET_OS_IPHONE                    [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone
 
-@interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate>
+@interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate,UITableViewDelegate,UITableViewDataSource>
 
 @property (retain,  nonatomic) CLLocationManager *locationManager;
 @property (retain,  nonatomic) MKMapView *mapView;
 @property (retain,  nonatomic) CLLocation *currentLocation;
-//@property (retain,  nonatomic) UIWebView* phoneCallWebView;
-@property (retain,  nonatomic) FSVenue *selected;
+@property (retain,  nonatomic) UITableView* tableView;
+//@property (retain,  nonatomic) FSVenue *selected;
 @property (retain,  nonatomic) NSArray *nearbyVenues;
 @property (retain,  nonatomic) Reachability* reachedHost;
 @property (retain,  nonatomic) UIAlertView* alertView;
@@ -40,16 +40,19 @@
 -(void)dealloc
 {
     
-    self.mapView.delegate=nil;
-    self.locationManager.delegate=nil;
-    self.alertView.delegate=nil;
-    [_locationManager release];
+    _mapView.delegate=nil;
     [_mapView release];
+    _tableView.delegate=nil;
+    _tableView.dataSource=nil;
+    [_tableView release];
+    _locationManager.delegate=nil;
+    [_locationManager release];
+    _alertView.delegate=nil;
+    [_alertView release];
     //[_phoneCallWebView release];
-    [_selected release];
+    //[_selected release];
     [_nearbyVenues release];
     [_reachedHost release];
-    [_alertView release];
     [_distance release];
     [_query release];
     [_currentLocation release];
@@ -124,18 +127,37 @@
     [self.alertView show];
     
 }
+-(void)setupConstraintsInView
+{
+    self.mapView=[[[MKMapView alloc] init] autorelease];
+    self.tableView= [[[UITableView alloc] init] autorelease];
+    [self.view addSubview:self.mapView];
+    [self.view addSubview:self.tableView];
+    self.tableView.delegate=self;
+    self.tableView.dataSource=self;
+    self.mapView.delegate=self;
+    //setup constraints:
+    [self.tableView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [self.mapView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    NSArray *tmpConstraints;
+    NSDictionary *views= @{ @"tableView":self.tableView,@"mapView":self.mapView};
+    tmpConstraints=[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[tableView]-0-|" options:0 metrics:nil views:views];
+    [self.view addConstraints:tmpConstraints];
+    tmpConstraints=[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[mapView]-0-|" options:0 metrics:nil views:views];
+    [self.view addConstraints:tmpConstraints];
+    tmpConstraints=[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[mapView(==tableView)][tableView]-0-|" options:0 metrics:nil views:views];
+    [self.view addConstraints:tmpConstraints];
+    //show the user's location
+    self.mapView.showsUserLocation=YES;
+
+    
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //initiate tableview's header view using mapview
-    CGRect rect= [self.view frame];
     self.title = @"Searching Map";
-    self.mapView= [[[MKMapView alloc] initWithFrame:CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height/3)] autorelease];
-    self.tableView.tableHeaderView = self.mapView;
-    [[self mapView] setDelegate:self];
-    //show the user's location
-    self.mapView.showsUserLocation=YES;
+    [self setupConstraintsInView];
     //initiate the location manager
     self.locationManager = [[[CLLocationManager alloc]init] autorelease];
     self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
@@ -161,7 +183,9 @@
         
         [self setEdgesForExtendedLayout:UIRectEdgeNone];
     }
-
+    
+   
+    
 
 
     
@@ -363,7 +387,7 @@
             region.center = venue.coordinate;
             [self.mapView setRegion:region animated:YES];
             //make the tableview to the origianl point to make users see the map conviniently
-            self.tableView.contentOffset=CGPointZero;
+            //self.tableView.contentOffset=CGPointZero;
 
         }
     }
@@ -440,7 +464,7 @@
     }
     
     
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
+    if (([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)&&[annotation.subtitle isKindOfClass:[NSString class]])
     {
         UIButton * button = [UIButton buttonWithType:UIButtonTypeInfoLight];
         annotationView.rightCalloutAccessoryView = button;
