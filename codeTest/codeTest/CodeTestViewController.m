@@ -34,6 +34,7 @@
 @property (retain,  nonatomic) NSArray *nearbyVenues;
 @property (retain,  nonatomic) Reachability* reachedHost;
 @property (retain,  nonatomic) UIAlertView* alertView;
+@property(retain,nonatomic) UIWebView* phoneCallWebView;
 @end
 
 @implementation CodeTestViewController
@@ -289,15 +290,15 @@
 
 -(void)makeACall:(NSString*) phoneNum
 {
-    /*// alternatively to make a call for future use in case the app can not pass the apple's examination
+    // alternatively to make a call for future use in case the app can not pass the apple's examination
     NSURL *phoneURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@",phoneNum]];
     if ( self.phoneCallWebView==nil) {
         self.phoneCallWebView = [[[UIWebView alloc] initWithFrame:CGRectZero] autorelease];
         
     }
     [self.phoneCallWebView loadRequest:[NSURLRequest requestWithURL:phoneURL]];
-    */
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",phoneNum]]];
+    
+    //[[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"tel://%@",phoneNum]]];
 }
 
 
