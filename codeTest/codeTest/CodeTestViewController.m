@@ -14,6 +14,7 @@
 #import "MBProgressHUD.h"
 #import "Reachability.h"
 
+
 #define kIndicatingWindowShowingTime         3
 #define kDefaultDistance                     1000//in meter
 #define kReachabilityTestURL                 @"www.foursquare.com"
@@ -22,6 +23,7 @@
 #define kTableCellHeight                     60
 #define kMaxLinesInACell                     3
 #define kFontSize                            15
+#define kCalloutOffset_x                     -8
 //#define TARGET_OS_IPHONE                    [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone
 
 @interface CodeTestViewController ()<CLLocationManagerDelegate,MKMapViewDelegate,UIAlertViewDelegate,UITableViewDelegate,UITableViewDataSource>
@@ -160,7 +162,7 @@
     self.title = @"Searching Map";
     [self setupConstraintsInView];
     //initiate the location manager
-    self.locationManager = [[[CLLocationManager alloc]init] autorelease];
+    self.locationManager = [[[CLLocationManager alloc]init] autorelease] ;
     //set the ordinary accuracy to help to save power
     self.locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters;
     self.locationManager.delegate = self;
@@ -290,7 +292,7 @@
 
 -(void)makeACall:(NSString*) phoneNum
 {
-    // alternatively to make a call for future use in case the app can not pass the apple's examination
+    // alternatively to make a call without quiting the current app
     NSURL *phoneURL = [NSURL URLWithString:[NSString stringWithFormat:@"tel:%@",phoneNum]];
     if ( self.phoneCallWebView==nil) {
         self.phoneCallWebView = [[[UIWebView alloc] initWithFrame:CGRectZero] autorelease];
@@ -466,7 +468,9 @@
     annotationView.animatesDrop = YES;
     annotationView.draggable = NO;
     annotationView.selected = YES;
-    annotationView.calloutOffset = CGPointZero;
+    //annotationView.calloutOffset = CGPointZero;
+    annotationView.calloutOffset = CGPointMake(kCalloutOffset_x, 0);
+
     return  annotationView;
    
 }
