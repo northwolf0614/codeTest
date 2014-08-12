@@ -175,7 +175,7 @@
     UIBarButtonItem *rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:@"Settings" style:UIBarButtonItemStyleBordered target:self action:@selector(handlerightButtonItem:)] autorelease];
     self.navigationItem.rightBarButtonItem = rightBarButtonItem;
     //initiate alertview
-    self.alertView = [[[UIAlertView alloc] initWithTitle:@"searching radius setting" message:@"searching radius(metres):" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"apply", nil] autorelease];
+    self.alertView = [[[UIAlertView alloc] initWithTitle:@"settings" message:@"search format: keyword/radius" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"apply", nil] autorelease];
     self.alertView.delegate=self;
     [self.alertView setAlertViewStyle:UIAlertViewStylePlainTextInput];
     //initiate the searching distance
@@ -414,6 +414,7 @@
     }
     
     [self setupMapForLocatoion:newLocation];
+    //[self.locationManager startUpdatingLocation];
     
 }
 
@@ -492,10 +493,15 @@
 #pragma UIAlertViewDelegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    NSString* radiusString=nil;
+    //NSString* radiusString=nil;
     if (buttonIndex==1)
     {
-        radiusString=[[self.alertView textFieldAtIndex:0] text];
+        NSString* expression=[[self.alertView textFieldAtIndex:0] text];
+        NSString* radiusString=[expression lastPathComponent];
+        NSString* keyWords=[expression stringByDeletingLastPathComponent];
+       
+        
+        
         if ([radiusString floatValue]<=0)
         {
             MBProgressHUD* HUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease] ;
@@ -515,6 +521,7 @@
         else
         {
             self.distance=[NSNumber numberWithFloat:[radiusString floatValue]] ;
+            self.query=keyWords;
             [self.locationManager startUpdatingLocation];
         }
         

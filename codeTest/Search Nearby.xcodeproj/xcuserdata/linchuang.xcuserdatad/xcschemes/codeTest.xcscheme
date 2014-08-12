@@ -17,7 +17,7 @@
                BlueprintIdentifier = "09BAC970198A6C8A00DA2C58"
                BuildableName = "codeTest.app"
                BlueprintName = "codeTest"
-               ReferencedContainer = "container:codeTest.xcodeproj">
+               ReferencedContainer = "container:Search Nearby.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "09BAC991198A6C8A00DA2C58"
                BuildableName = "codeTestTests.xctest"
                BlueprintName = "codeTestTests"
-               ReferencedContainer = "container:codeTest.xcodeproj">
+               ReferencedContainer = "container:Search Nearby.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -45,7 +45,7 @@
             BlueprintIdentifier = "09BAC970198A6C8A00DA2C58"
             BuildableName = "codeTest.app"
             BlueprintName = "codeTest"
-            ReferencedContainer = "container:codeTest.xcodeproj">
+            ReferencedContainer = "container:Search Nearby.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -64,7 +64,7 @@
             BlueprintIdentifier = "09BAC970198A6C8A00DA2C58"
             BuildableName = "codeTest.app"
             BlueprintName = "codeTest"
-            ReferencedContainer = "container:codeTest.xcodeproj">
+            ReferencedContainer = "container:Search Nearby.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -82,7 +82,7 @@
             BlueprintIdentifier = "09BAC970198A6C8A00DA2C58"
             BuildableName = "codeTest.app"
             BlueprintName = "codeTest"
-            ReferencedContainer = "container:codeTest.xcodeproj">
+            ReferencedContainer = "container:Search Nearby.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
